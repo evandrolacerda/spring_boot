@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Bootstrap demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+</head>
+<body>
+<div class="container">
+    <div class="row">
+        <div class="col-12">
+            <h1 class="pb-5 pt-3">Albums</h1>
+
+            <div class="card">
+                <div class="card-header">Adicionar Novo Álbum</div>
+                <div class="card-body">
+                    <form th:action="@{/album}" method="post" th:object="${albumDto}">
+
+                        <div class="form-group">
+                            <label for="title">
+                                Título
+                            </label>
+                            <input type="text" id="title" name="title" class="form-control">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('title')}" th:errors="*{title}" style="display: block">
+
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="releaseYear">
+                                Ano de Lançamento
+                            </label>
+                            <input type="text" name="releaseYear" id="releaseYear" class="form-control">
+                            <div class="invalid-feedback" th:if="${#fields.hasErrors('releaseYear')}" th:errors="*{releaseYear}" style="display: block">
+
+                            </div>
+                        </div>
+
+
+                        <div class="form-group" style="margin-top: 5px">
+                            <button class="btn btn-primary">
+                                Salvar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <div class="card-body" style="margin-top: 50px">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Título</th>
+                    </tr>
+                    </thead>
+                    <tr th:each="album,iter : ${albuns}"  class="">
+                        <td th:text="${iter.index + 1 }"></td>
+                        <td th:text="${album}"></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
+</body>
+</html>
