@@ -30,4 +30,9 @@ public class Album {
     public void setYearRelease(String yearRelease) {
         this.yearRelease = yearRelease;
     }
+
+    public Long getId() {
+        return id;
+    }
+
 }

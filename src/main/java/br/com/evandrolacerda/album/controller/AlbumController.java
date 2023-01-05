@@ -20,6 +20,12 @@ import java.util.*;
 
 import org.json.JSONArray;
 
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 @Controller
@@ -28,24 +34,39 @@ public class AlbumController {
     @Autowired
     private AlbumRepository albumRepository;
 
+    @Autowired
+    private EntityManager entityManager;
+
     public AlbumController(AlbumRepository albumRepository) {
         this.albumRepository = albumRepository;
     }
 
     @RequestMapping("/album")
-    public String index( Model model, AlbumDto albumDto ){
+    public String index(Model model, AlbumDto albumDto, HttpServletRequest request){
 
-        HttpClient client = HttpClient.newHttpClient();
-        HttpRequest request = HttpRequest.newBuilder().uri(
-                URI.create("https://jsonplaceholder.typicode.com/albums/")
-        ).build();
+        CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Album> criteria = builder.createQuery( Album.class );
 
-        String responseBody = client.sendAsync( request, HttpResponse.BodyHandlers.ofString() )
-                .thenApply( HttpResponse::body )
-                .join();
+        Root<Album> root = criteria.from(Album.class);
 
-        Set<String> nonRepeatedAlbums = parse( responseBody );
-        model.addAttribute("albuns", nonRepeatedAlbums );
+        List<Predicate> predicates = new ArrayList<>();
+
+
+
+        String title = request.getParameter("title");
+
+        if( title != null ){
+            predicates.add(
+                    builder.like(root.get("title"), String.format("%%%s%%", title )  )
+            );
+        }
+
+        System.out.println( title );
+        criteria.where(predicates.toArray(new Predicate[predicates.size()]));
+        List<Album> albums = entityManager.createQuery( criteria ).getResultList();
+
+
+        model.addAttribute("albuns", albums );
 
         return "album";
     }

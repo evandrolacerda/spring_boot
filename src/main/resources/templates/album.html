@@ -57,8 +57,8 @@
                     </tr>
                     </thead>
                     <tr th:each="album,iter : ${albuns}"  class="">
-                        <td th:text="${iter.index + 1 }"></td>
-                        <td th:text="${album}"></td>
+                        <td th:text="${album.id}"></td>
+                        <td th:text="${album.title}"></td>
                     </tr>
                 </table>
             </div>
